@@ -1,35 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React from 'react'
+import axios from 'axios'
 import './App.css'
+import Transaction from './entities/transaction'
+import Table from './components/Table'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [transactions, setTransactions] = React.useState<Transaction[] | null>(null)
+  const [file, setFile] = React.useState<File | null>(null)
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) {
+      return;
+    }
+    setFile(event.target.files[0])
+  }
+
+  const handleSubmit = async (event: React.SyntheticEvent) => {
+    event?.preventDefault()
+
+    if(!file) {
+      return;
+    }
+
+    let formData = new FormData()
+    formData.append('file', file)
+
+    const transactions =await axios.post("http://localhost:3000/upload", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    setTransactions(transactions.data.transactions)
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>Upload de Arquivo
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="">Escolhar um arquivo: </label>
+          
+          <input
+            type="file"
+            name="file"
+            id="file"
+            required
+            onChange={handleChange}
+          />
+
+          <br/>
+
+          <input
+            type="submit"
+            value="Upload"
+          />
+        </form>
+      </h1>
+
+      {
+        !transactions ? <></> : <Table transactions={transactions}/>
+      }
     </>
   )
 }
-
-export default App
