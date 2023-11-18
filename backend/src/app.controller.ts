@@ -13,8 +13,11 @@ export class AppController {
   async uploadFile(@UploadedFile() file: Express.Multer.File, @Res() res: Response) {
     const data = this.appService.getData(file)
 
+    const insert = await this.appService.saveTransactions(data)
+
     res.status(HttpStatus.CREATED).json({
-      message: "Arquivo enviado"
+      message: `${insert.count} Transações foram adiconadas.`,
+      transactions: data
     })
   }
 }

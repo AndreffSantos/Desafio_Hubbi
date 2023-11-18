@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs'
 import { Transaction } from './entities/entities';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient()
 
 @Injectable()
 export class AppService {
@@ -20,5 +23,11 @@ export class AppService {
       })
     }
     return transaction;
+  }
+
+  async saveTransactions(data: Transaction[]) {
+    return await prisma.transaction.createMany({
+      data
+    })
   }
 }
