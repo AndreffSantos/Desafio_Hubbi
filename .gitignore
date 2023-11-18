@@ -6,3 +6,6 @@
 
 # Compilers
 */dist/
+
+# Environment Variables
+*/.env
