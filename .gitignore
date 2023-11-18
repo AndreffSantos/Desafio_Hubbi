@@ -1,0 +1,8 @@
+# Node Libs
+*/node_modules/
+
+# IDE - VSCode
+.vscode/*
+
+# Compilers
+*/dist/
