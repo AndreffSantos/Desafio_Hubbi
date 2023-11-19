@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { Response } from 'express'
 
 
-@Controller()
+@Controller("upload")
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
